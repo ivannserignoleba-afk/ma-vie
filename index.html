@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Surprise pour toi 💖</title>
+    <meta name="description" content="Une petite surprise digitale. Scanne le QR pour y accéder." />
+    <style>
+      :root{--bg1:#1a0720;--bg2:#37124b;--accent:#ff7fbf;--card:#ffffff14}
+      *{box-sizing:border-box}
+      html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
+      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+      .card{width:min(760px,96%);background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));border-radius:24px;padding:36px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 60px #0008}
+      h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.8rem);letter-spacing:0.02em}
+      p.lead{margin:0 0 18px;color:#ffdcee}
+      .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+      .btn{background:linear-gradient(135deg,var(--accent),#ff5da8);border:none;color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer}
+      .note{margin-top:20px;color:#ffd6eccc;font-size:0.95rem;line-height:1.6}
+      .qr-sample{margin-top:18px;padding:14px;background:rgba(255,255,255,0.06);border-radius:14px;word-break:break-word}
+      .small{opacity:0.85;font-size:0.95rem}
+      .hidden{display:none}
+      .reveal{margin-top:24px;padding:28px 26px;border-radius:26px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);box-shadow:0 18px 45px rgba(0,0,0,0.14);opacity:0;transform:translateY(18px) scale(0.98);transition:opacity .35s ease,transform .35s ease}
+      .reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+      .reveal h2{margin:0 0 12px;font-size:1.7rem;letter-spacing:0.01em}
+      .reveal p{margin:0 0 12px;line-height:1.65;color:#ffe6f0}
+      .surprise-text{font-size:1.05rem;font-weight:600;color:#fff;}
+      .btn{transition:transform .22s ease,box-shadow .22s ease}
+      .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 18px 30px rgba(255,93,168,0.35)}
+      .btn.opened{background:linear-gradient(135deg,#8e5aff,#ff5da8);box-shadow:0 12px 25px rgba(142,90,255,0.35)}
+      /* responsive */
+      @media (max-width:520px){.card{padding:22px}.cta{flex-direction:column;align-items:stretch}}
+    </style>
+  </head>
+  <body>
+    <!--
+      Ce fichier est autonome — il peut être hébergé tel quel (GitHub Pages, Netlify, etc.).
+      Génère un QR pointant vers l'URL publique de ce fichier (ex: https://<ton-site>/index.html).
+
+      Exemple d'URL Google Charts pour créer un QR (remplace YOUR_URL) :
+      https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=YOUR_URL
+
+      (Tu peux aussi utiliser https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=YOUR_URL )
+    -->
+
+    <div class="wrap">
+      <div class="card">
+        <h1>Une surprise pour toi 💖</h1>
+        <p class="lead">Salut ma belle — scanne le QR que je t'ai envoyé pour découvrir ta surprise.</p>
+
+        <div class="cta">
+          <button class="btn" id="openBtn">Ouvrir la surprise</button>
+          <div class="small">Ou partage cette page : <strong id="pageUrl"></strong></div>
+        </div>
+
+        <div class="note">
+          Scanne le QR qui pointe vers cette page avec <strong>?from=qr</strong> pour ouvrir la surprise immédiatement.
+          <div class="qr-sample" id="qrSample"></div>
+          <div class="small">Pour ton QR, utilise cette adresse exacte : <strong id="qrLink"></strong></div>
+        </div>
+        <div class="reveal hidden" id="reveal">
+          <h2>✨ Ta surprise est maintenant ouverte !</h2>
+          <p>Voici ton message secret :</p>
+          <p class="surprise-text">Chaque fois que je pense à toi, c’est un sourire qui naît au fond de moi. Tu es la personne qui rend tous mes jours plus beaux.</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const pageUrlEl = document.getElementById('pageUrl');
+      const qrLinkEl = document.getElementById('qrLink');
+      const qrSampleEl = document.getElementById('qrSample');
+      const openBtn = document.getElementById('openBtn');
+      const reveal = document.getElementById('reveal');
+      function currentUrl(){
+        try{return window.location.href}catch(e){return 'http://your-domain/index.html'}
+      }
+      function buildQrUrl(url){
+        try {
+          const target = new URL(url);
+          target.search = '';
+          target.hash = '';
+          return target.href + (target.href.includes('?') ? '&' : '?') + 'from=qr';
+        } catch (e) {
+          return url.split('?')[0] + '?from=qr';
+        }
+      }
+      const pageLink = currentUrl();
+      const qrLink = buildQrUrl(pageLink);
+      pageUrlEl.textContent = pageLink;
+      qrLinkEl.textContent = qrLink;
+      qrSampleEl.textContent = 'https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + encodeURIComponent(qrLink);
+
+      function openSurprise(){
+        reveal.classList.remove('hidden');
+        reveal.classList.add('visible');
+        openBtn.textContent = '✨ Surprise ouverte !';
+        openBtn.classList.add('opened');
+        openBtn.disabled = true;
+      }
+
+      openBtn.addEventListener('click', openSurprise);
+
+      const params = new URLSearchParams(location.search);
+      if(params.get('from') === 'qr'){
+        openSurprise();
+      }
+    </script>
+  </body>
+</html>
