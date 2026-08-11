@@ -1,109 +1,412 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Surprise pour toi 💖</title>
-    <meta name="description" content="Une petite surprise digitale. Scanne le QR pour y accéder." />
-    <style>
-      :root{--bg1:#1a0720;--bg2:#37124b;--accent:#ff7fbf;--card:#ffffff14}
-      *{box-sizing:border-box}
-      html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
-      .card{width:min(760px,96%);background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));border-radius:24px;padding:36px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 60px #0008}
-      h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.8rem);letter-spacing:0.02em}
-      p.lead{margin:0 0 18px;color:#ffdcee}
-      .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-      .btn{background:linear-gradient(135deg,var(--accent),#ff5da8);border:none;color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer}
-      .note{margin-top:20px;color:#ffd6eccc;font-size:0.95rem;line-height:1.6}
-      .qr-sample{margin-top:18px;padding:14px;background:rgba(255,255,255,0.06);border-radius:14px;word-break:break-word}
-      .small{opacity:0.85;font-size:0.95rem}
-      .hidden{display:none}
-      .reveal{margin-top:24px;padding:28px 26px;border-radius:26px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);box-shadow:0 18px 45px rgba(0,0,0,0.14);opacity:0;transform:translateY(18px) scale(0.98);transition:opacity .35s ease,transform .35s ease}
-      .reveal.visible{opacity:1;transform:translateY(0) scale(1)}
-      .reveal h2{margin:0 0 12px;font-size:1.7rem;letter-spacing:0.01em}
-      .reveal p{margin:0 0 12px;line-height:1.65;color:#ffe6f0}
-      .surprise-text{font-size:1.05rem;font-weight:600;color:#fff;}
-      .btn{transition:transform .22s ease,box-shadow .22s ease}
-      .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 18px 30px rgba(255,93,168,0.35)}
-      .btn.opened{background:linear-gradient(135deg,#8e5aff,#ff5da8);box-shadow:0 12px 25px rgba(142,90,255,0.35)}
-      /* responsive */
-      @media (max-width:520px){.card{padding:22px}.cta{flex-direction:column;align-items:stretch}}
-    </style>
-  </head>
-  <body>
-    <!--
-      Ce fichier est autonome — il peut être hébergé tel quel (GitHub Pages, Netlify, etc.).
-      Génère un QR pointant vers l'URL publique de ce fichier (ex: https://<ton-site>/index.html).
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joyeux Anniversaire Mon Amour ❤️</title>
+  <style>
 
-      Exemple d'URL Google Charts pour créer un QR (remplace YOUR_URL) :
-      https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=YOUR_URL
+    :root {
+      --bg-color: #07090a;
+      --card-bg: #0f1416;
+      --accent-color: #39ff14; /* neon green */
+      --text-color: #bfffb8;
+      --muted: #8aa08a;
+      --shadow-dark: rgba(0,0,0,0.7);
+      --glow: rgba(57,255,20,0.12);
+    }
 
-      (Tu peux aussi utiliser https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=YOUR_URL )
-    -->
+    body {
+      margin: 0;
+      padding: 28px;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(57,255,20,0.02), transparent 5%), linear-gradient(180deg,#020203 0%, #07090a 100%);
+      font-family: 'Roboto Mono', 'Courier New', monospace;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-    <div class="wrap">
-      <div class="card">
-        <h1>Une surprise pour toi 💖</h1>
-        <p class="lead">Salut ma belle — scanne le QR que je t'ai envoyé pour découvrir ta surprise.</p>
+    .container {
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
 
-        <div class="cta">
-          <button class="btn" id="openBtn">Ouvrir la surprise</button>
-          <div class="small">Ou partage cette page : <strong id="pageUrl"></strong></div>
+    h1 {
+      color: var(--accent-color);
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    .screen {
+      display: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid rgba(57,255,20,0.03);
+      box-shadow: 0 8px 20px var(--shadow-dark), 0 0 30px var(--glow);
+      margin-top: 12px;
+      animation: fadeIn 0.45s ease;
+    }
+
+    .active {
+      display: block;
+    }
+
+    /* Boîte Cadeau */
+
+    .gift-box {
+      width: 150px;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      cursor: pointer;
+      margin: 28px auto;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #0b0f11, #121619);
+      box-shadow: 0 10px 20px var(--shadow-dark), 0 0 18px rgba(57,255,20,0.06) inset;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      user-select: none;
+      -webkit-user-select: none;
+      animation: beat 1.1s ease-in-out infinite;
+      color: var(--accent-color);
+      text-shadow: 0 2px 8px rgba(57,255,20,0.14);
+    }
+
+    .gift-box:hover {
+      transform: scale(1.06) translateY(-4px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.75), 0 0 28px rgba(57,255,20,0.18);
+    }
+
+    @keyframes beat {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.12) rotate(-1deg); }
+      60% { transform: scale(0.98) rotate(0.5deg); }
+      100% { transform: scale(1); }
+    }
+
+    /* Menu des modules */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .card-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+      box-shadow: 0 6px 14px var(--shadow-dark), 0 0 12px rgba(57,255,20,0.03);
+      border: 1px solid rgba(57,255,20,0.04);
+    }
+
+    .card-item:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.8), 0 0 28px rgba(57,255,20,0.12);
+    }
+
+    .card-item span {
+      font-size: 30px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    /* Boutons de retour */
+    .btn-back {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    /* Galerie Photos (Style Film/Polaroid) */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .polaroid {
+      background: white;
+      padding: 10px 10px 20px 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 5px;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 3px;
+    }
+    .polaroid video {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 3px;
+      display: block;
+    }
+
+    /* Lettre d'amour */
+    .letter {
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      line-height: 1.8;
+      text-align: left;
+      background: #fffaf0;
+      padding: 20px;
+      border-left: 4px solid var(--accent-color);
+      border-radius: 5px;
+    }
+
+    /* Lettre sur photo (overlay) */
+    .letter-overlay {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      align-items: flex-start;
+      padding: 24px;
+    }
+
+    .letter-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.28);
+      pointer-events: none;
+    }
+
+    .letter-overlay .letter-text {
+      position: relative;
+      z-index: 1;
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      line-height: 1.7;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      max-width: 100%;
+    }
+
+    /* Matrix love words */
+    #matrix-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+
+    .container { position: relative; z-index: 1; }
+
+    .m-col {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+      display: block;
+    }
+
+    .m-strip-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      will-change: transform;
+      transform: translateY(-10%);
+    }
+
+    .m-strip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .m-word {
+      color: rgba(57,255,20,0.95);
+      font-family: inherit;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      opacity: 0.95;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+      transform: translateZ(0);
+    }
+
+    @keyframes matrixScroll {
+      from { transform: translateY(-50%); }
+      to   { transform: translateY(50%); }
+    }
+
+    .m-strip-wrapper {
+      animation-name: matrixScroll;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="matrix-bg" aria-hidden="true"></div>
+
+  <div class="container">
+
+    <div id="screen-home" class="screen active">
+      <h1>Joyeux Anniversaire Mon Amour ! ❤️</h1>
+      <p>Clique sur le cadeau pour ouvrir ta surprise</p>
+      <div class="gift-box" onclick="showScreen('screen-menu')">🎁</div>
+    </div>
+
+    <div id="screen-menu" class="screen">
+      <h2>Fait juste pour toi ✨</h2>
+      <div class="menu-grid">
+        <div class="card-item" onclick="showScreen('screen-flowers')">
+          <span>🌸</span>
+          <small>Fleurs & Musique</small>
         </div>
-
-        <div class="note">
-          Scanne le QR qui pointe vers cette page avec <strong>?from=qr</strong> pour ouvrir la surprise immédiatement.
-          <div class="qr-sample" id="qrSample"></div>
-          <div class="small">Pour ton QR, utilise cette adresse exacte : <strong id="qrLink"></strong></div>
+        <div class="card-item" onclick="showScreen('screen-gallery')">
+          <span>📸</span>
+          <small>Nos Souvenirs</small>
         </div>
-        <div class="reveal hidden" id="reveal">
-          <h2>✨ Ta surprise est maintenant ouverte !</h2>
-          <p>Voici ton message secret :</p>
-          <p class="surprise-text">Chaque fois que je pense à toi, c’est un sourire qui naît au fond de moi. Tu es la personne qui rend tous mes jours plus beaux.</p>
+        <div class="card-item" onclick="showScreen('screen-letter')">
+          <span>💌</span>
+          <small>Ma Lettre</small>
         </div>
       </div>
     </div>
 
-    <script>
-      const pageUrlEl = document.getElementById('pageUrl');
-      const qrLinkEl = document.getElementById('qrLink');
-      const qrSampleEl = document.getElementById('qrSample');
-      const openBtn = document.getElementById('openBtn');
-      const reveal = document.getElementById('reveal');
-      function currentUrl(){
-        try{return window.location.href}catch(e){return 'http://your-domain/index.html'}
-      }
-      function buildQrUrl(url){
-        try {
-          const target = new URL(url);
-          target.search = '';
-          target.hash = '';
-          return target.href + (target.href.includes('?') ? '&' : '?') + 'from=qr';
-        } catch (e) {
-          return url.split('?')[0] + '?from=qr';
+    <div id="screen-flowers" class="screen">
+      <h2>Une chanson qui me fait penser a toi H24 🎶</h2>
+      <div style="margin: 20px 0;">
+        <span style="font-size: 60px;"><img src="photo1.jpg" alt="Souvenir 1"></span>
+        <p><strong>"La clé" - Tiakola</strong></p>
+        <audio controls style="width: 100%; max-width: 300px;">
+          <source src="musique.mp3" type="audio/mpeg">
+          Ton navigateur ne supporte pas l'élément audio.
+        </audio>
+      </div>
+      <button class="btn-back" onclick="showScreen('screen-menu')">← Retour</button>
+    </div>
+
+    <div id="screen-gallery" class="screen">
+      <h2>les photos et video de toi ma vie 📸</h2>
+      <div class="gallery">
+        <div class="polaroid"><video src="IMG_5953.MP4" controls playsinline preload="metadata"></video></div>
+        <div class="polaroid"><img src="photo1.jpg" alt="Souvenir 2"></div>
+        <div class="polaroid"><video src="IMG_6015.MP4" controls playsinline preload="metadata"></video></div>
+        <div class="polaroid"><video src="IMG_5967.MP4" controls playsinline preload="metadata"></video></div>
+      </div>
+      <button class="btn-back" onclick="showScreen('screen-menu')">← Retour</button>
+    </div>
+
+    <div id="screen-letter" class="screen">
+      <h2> Ma Vie, 💕</h2>
+      <div class="letter-overlay" style="background-image: url('photo1.jpg')">
+        <div class="letter-text">
+          <p>Mon amour, en ce jour qui célèbre ta naissance je veux te dire combien tu rends ma vie plus belle — chaque sourire, chaque regard, chaque moment passé avec toi est un trésor.</p>
+          <p>Tu es ma joie, mon refuge et la personne qui me complète. Je t'aime profondément, et mon amour pour toi grandit un peu plus chaque jour.</p>
+          <p>Je te promets d'être là pour toi, de te soutenir et de construire notre avenir ensemble. Si je pouvais choisir encore, je te choisirais encore et encore.</p>
+          <p style="text-align: right;"><strong>Merci d'être ma femme. Je t'aimerai pour toujours.<br>Pour toujours,<br>Ghost</strong></p>
+        </div>
+      </div>
+      <button class="btn-back" onclick="showScreen('screen-menu')">← Retour</button>
+    </div>
+
+  </div>
+
+  <script>
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+    }
+    
+    // Matrix-style love words background
+    (function createMatrix() {
+      const words = [
+        "je t'aime",
+        "mon amour",
+        "tu es ma vie",
+        "toujours",
+        "mon coeur",
+        "ma femme",
+        "bébé",
+        "pour toujours",
+        "je pense à toi",
+        "mon trésor",
+        "à toi",
+        "je t'adore"
+      ];
+
+      const cols = Math.max(6, Math.floor(window.innerWidth / 90));
+      const matrix = document.getElementById('matrix-bg');
+      matrix.style.setProperty('--cols', cols);
+      matrix.innerHTML = '';
+      matrix.style.pointerEvents = 'none';
+
+      for (let i = 0; i < cols; i++) {
+        const col = document.createElement('div');
+        col.className = 'm-col';
+        col.style.left = (i * (100 / cols)) + '%';
+        col.style.width = (100 / cols) + '%';
+
+        const strip = document.createElement('div');
+        strip.className = 'm-strip-wrapper';
+        // build content repeated for smooth loop
+        let content = '';
+        const repeats = 24;
+        for (let r = 0; r < repeats; r++) {
+          const w = words[Math.floor(Math.random() * words.length)];
+          content += `<div class="m-word">${w}</div>`;
         }
-      }
-      const pageLink = currentUrl();
-      const qrLink = buildQrUrl(pageLink);
-      pageUrlEl.textContent = pageLink;
-      qrLinkEl.textContent = qrLink;
-      qrSampleEl.textContent = 'https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + encodeURIComponent(qrLink);
+        // duplicate
+        strip.innerHTML = `<div class="m-strip">${content}${content}</div>`;
 
-      function openSurprise(){
-        reveal.classList.remove('hidden');
-        reveal.classList.add('visible');
-        openBtn.textContent = '✨ Surprise ouverte !';
-        openBtn.classList.add('opened');
-        openBtn.disabled = true;
+        // randomize speed and offset
+        const dur = (10 + Math.random() * 18).toFixed(2);
+        strip.style.animationDuration = dur + 's';
+        strip.style.animationDelay = '-' + (Math.random() * dur).toFixed(2) + 's';
+        strip.style.opacity = (0.25 + Math.random() * 0.7).toString();
+        strip.querySelector('.m-strip').style.gap = (8 + Math.random() * 14) + 'px';
+        strip.querySelector('.m-strip').style.fontSize = (12 + Math.random() * 10) + 'px';
+
+        col.appendChild(strip);
+        matrix.appendChild(col);
       }
 
-      openBtn.addEventListener('click', openSurprise);
-
-      const params = new URLSearchParams(location.search);
-      if(params.get('from') === 'qr'){
-        openSurprise();
-      }
-    </script>
-  </body>
+      // rebuild on resize
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(createMatrix, 300);
+      });
+    })();
+  </script>
+</body>
 </html>
