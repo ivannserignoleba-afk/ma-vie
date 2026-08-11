@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Surprise pour toi 💖</title>
+    <meta name="description" content="Une petite surprise digitale. Scanne le QR pour y accéder." />
+    <style>
+      :root{--bg1:#1a0720;--bg2:#37124b;--accent:#ff7fbf;--card:#ffffff14}
+      *{box-sizing:border-box}
+      html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff}
+      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+      .card{width:min(760px,96%);background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));border-radius:24px;padding:36px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 60px #0008}
+      h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.8rem);letter-spacing:0.02em}
+      p.lead{margin:0 0 18px;color:#ffdcee}
+      .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+      .btn{background:linear-gradient(135deg,var(--accent),#ff5da8);border:none;color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer}
+      .note{margin-top:20px;color:#ffd6eccc;font-size:0.95rem}
+      .qr-sample{margin-top:18px}
+      .small{opacity:0.85;font-size:0.95rem}
+      /* responsive */
+      @media (max-width:520px){.card{padding:22px}.cta{flex-direction:column;align-items:stretch}}
+    </style>
+  </head>
+  <body>
+    <!--
+      Ce fichier est autonome — il peut être hébergé tel quel (GitHub Pages, Netlify, etc.).
+      Génère un QR pointant vers l'URL publique de ce fichier (ex: https://<ton-site>/index.html).
+
+      Exemple d'URL Google Charts pour créer un QR (remplace YOUR_URL) :
+      https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=YOUR_URL
+
+      (Tu peux aussi utiliser https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=YOUR_URL )
+    -->
+
+    <div class="wrap">
+      <div class="card">
+        <h1>Une surprise pour toi 💖</h1>
+        <p class="lead">Salut ma belle — scanne le QR que je t'ai envoyé pour découvrir ta surprise.</p>
+
+        <div class="cta">
+          <button class="btn" id="openBtn">Ouvrir la surprise</button>
+          <div class="small">Ou partage cette page : <strong id="pageUrl"></strong></div>
+        </div>
+
+        <div class="note">
+          Si tu veux générer un QR depuis Google, utilise l'URL suivante en remplaçant <em>YOUR_URL</em> par l'adresse publique de cette page :
+          <div class="qr-sample">https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=YOUR_URL</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Affiche l'URL actuelle (utile si tu héberges et veux construire le QR)
+      const pageUrlEl = document.getElementById('pageUrl');
+      const openBtn = document.getElementById('openBtn');
+      function currentUrl(){
+        // prefer full URL if available
+        try{return window.location.href}catch(e){return 'http://your-domain/index.html'}
+      }
+      pageUrlEl.textContent = currentUrl();
+
+      // Bouton d'ouverture : affiche le contenu "révélé" — ici une animation simple
+      openBtn.addEventListener('click', ()=>{
+        openBtn.textContent = '✨ Surprise ouverte ✨';
+        openBtn.disabled = true;
+        setTimeout(()=>{
+          alert('Joyeux moment !');
+        },200);
+      });
+
+      // Si on veut détecter des paramètres (ex: ?from=qr) on peut agir différemment
+      const params = new URLSearchParams(location.search);
+      if(params.get('from') === 'qr'){
+        // action optionnelle si page ouverte via QR
+        openBtn.click();
+      }
+    </script>
+  </body>
+</html>
